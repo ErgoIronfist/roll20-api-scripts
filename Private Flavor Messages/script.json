@@ -1,0 +1,22 @@
+{
+"name": "Privaye Flavor Messages",
+"script": "PrivateFlavor.js",
+"version": ["0.1"],
+"previousversions": [],
+"description":  "Inspired by Phillip Tran's Hidden Roll Messages and Stephen Lindberg's World Map discovery, this script is a combination of both and will look for a token on the GM layer that is within a given distance of a players token, and if found will roll for the moving player token and provide flavor text via private message to the player.",
+"authors": "Ergo Ironfist", "Phillip Tran", "Stephen Lindberg",
+"roll20userid": "8641925", "7364874", "46544",
+"useroptions": [],
+"dependencies": ["vector Math"],
+   "modifies": {
+        "aura1_radius": "read, write",
+        "chat": "write",
+        "lastmove": "write",
+        "layer": "read, write",
+        "left": "read, write",
+        "status_white-tower": "read",
+        "token": "read",
+        "top": "read, write"
+    },
+    "conflicts": []
+}
