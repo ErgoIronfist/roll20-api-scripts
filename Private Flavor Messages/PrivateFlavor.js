@@ -7,11 +7,13 @@
   Inspired by Phillip Tran's Hidden Roll Messages and Stephen Lindberg's World Map discovery, this script is a combination of both and will look for a token within a given distance
   and if found will roll for the moving player token and provide flavor text via private message to the player.
 
+
 The script reads a JASON string from the tokens GM notes that contains the attribute to roll, the success required and an
 on pass and on fail message.
 
-The token current;y has two configurations options in the JSON, resettoken will 0 or 1 if set to 0 the token will NOT be reset on a failed check. The second atrribute is rollattrib if set to 1 a dice roll based on DICE will be added to the result
-this allows for rols using bonuses like perception_bonus setting it to 0 will just use the attribute like passive_wisdom.
+The token currently has two configurations options in the JSON, resettoken will true or false if set to false the token will NOT be reset on a failed check.
+The second atrribute is rollattrib if set to true a dice roll based on DICE will be added to the result
+this allows for rols using bonuses like perception_bonus setting it to false will just use the attribute like passive_wisdom.
 
 I use this mostly to roll passives for a player when they walk by a secret door, trap, on anything else I would normally check
 for them if they are not actually searching.
@@ -19,17 +21,21 @@ for them if they are not actually searching.
 Place the white-tower token marker on the token and the Jason in the GM Notes and set aura_1 to the distance you want. Place the location token on the GM Layer.
 
 
-Json for token: remove the comments "// + text" in each line rollYN and resettoken both default to yes
+Json for token:
 {
 
-    "rollYN" :true" or false roll for result us use the attr value
-    "resettoken" : false // true or false reset the token on a failed attempt.
-    "attr": "perception_bonus", // The attribute to use. Must match the exact name on the character sheet.
-    "pass": 20, //The value needed to pass the roll check.
-    "on_pass": "There is a masonry block that seems a little offset from the others. It looks as if it sticks out a little on one side.", //The sucess message.
+    "rollattrib": false,
+    "resettoken": false,
+    "attr": "passive_wisdom",
+    "pass": 5,
+    "on_pass": "While surveying the area you notice  a  masonry block on the floor that has an unmortared edge on it.",
     "on_fail": "The goblin bodies appear to have been chewed on by rats." //The fail message.
 
 }
+
+on_fail is optional and may be left off if there is no fail maeeage. In this case be sure to remove the comma afyer the on_pass message.
+
+
 
 a whisper from "Your Intuition" is sent to the player and a pass/fail and copy of the text is whispered to the GM.
 
