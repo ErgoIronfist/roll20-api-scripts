@@ -60,8 +60,8 @@ var PrivateFlavorMessage = (function () {
         rollTest(discoverer, location, character);
        
 
-      log("rollResult: " + rollResult);
-      log("resetToken: " + resetToken);
+      // log("rollResult: " + rollResult);
+     //  log("resetToken: " + resetToken);
 
       // Failed the check, reset token if it is set to reset it. If not reset the token remains active for the next player that intersects it.
       if (rollResult = false) {
@@ -71,7 +71,7 @@ var PrivateFlavorMessage = (function () {
               location.set('status_white-tower', false);
           }
 
-      } else if (rollResult) {location.set('aura1_radius', '');
+      } else if (rollResult = true) {location.set('aura1_radius', '');
               location.set('status_white-tower', false);
 
       }
@@ -195,7 +195,7 @@ var PrivateFlavorMessage = (function () {
             let command = "/w " + recipient + " " + msgPass;
 
             msgGM = msgPass;
-            log("CHAT SEND Pass " + command);
+        
             sendChat("Your Intuition", command, null, { noarchive: true });
         }
         else if (msgFail != undefined) {
