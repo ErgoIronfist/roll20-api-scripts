@@ -1,14 +1,17 @@
 ﻿
 /*
   Author: Ergo Ironfist
-  Version: 0.1
+  Version: 0.2
   Date: 08/01/2021
 
   Inspired by Phillip Tran's Hidden Roll Messages and Stephen Lindberg's World Map discovery, this script is a combination of both and will look for a token within a given distance
   and if found will roll for the moving player token and provide flavor text via private message to the player.
 
 The script reads a JASON string from the tokens GM notes that contains the attribute to roll, the success required and an
-on pass ans on fail message.
+on pass and on fail message.
+
+The token current;y has two configurations options in the JSON, resettoken will 0 or 1 if set to 0 the token will NOT be reset on a failed check. The second atrribute is rollattrib if set to 1 a dice roll based on DICE will be added to the result
+this allows for rols using bonuses like perception_bonus setting it to 0 will just use the attribute like passive_wisdom.
 
 I use this mostly to roll passives for a player when they walk by a secret door, trap, on anything else I would normally check
 for them if they are not actually searching.
@@ -16,9 +19,11 @@ for them if they are not actually searching.
 Place the white-tower token marker on the token and the Jason in the GM Notes and set aura_1 to the distance you want. Place the location token on the GM Layer.
 
 
-Json for token:
+Json for token: remove the comments "// + text" in each line rollYN and resettoken both default to yes
 {
 
+    "rollYN" :true" or false roll for result us use the attr value
+    "resettoken" : false // true or false reset the token on a failed attempt
     "attr": "perception_bonus", // The attribute to use. Must match the exact name on the character sheet
     "pass": 20, //The value needed to pass the roll check
     "on_pass": "There is a masonry block that seems a little offset from the others. It looks as if it sticks out a little on one side.", //The sucess message
@@ -28,23 +33,48 @@ Json for token:
 
 a whisper from "Your Intuition" is sent to the player and a pass/fail and copy of the text is whispered to the GM.
 
+NOTES:
+This script requires the Vctor Math and collision detection scripts to run.
+The character token should have its name displayed.
+
+
+08/02/2021 EI  Added functionality to choose between useing a passive trait like passive and not rolling or rolling with a bonus, and the option not to reset the tokin on a failed attempt
+
 */
 var PrivateFlavorMessage = (function () {
     var DICE = 20;
     var PIXELS_PER_SQUARE = 70;
     var VERSION = '0.1';
+    var resetToken = Boolean(false);
+    var rollResult = Boolean(false);
 
     /**
      * Causes a location to become discovered.
      * @param {Graphic} location      The location that is being discovered.
      * @param {Graphic} discoverer    The token that discovered the location.
      */
-    function discoverLocation(location, discoverer) {
-        location.set('aura1_radius', '');
-        location.set('status_white-tower', false);
+  function discoverLocation(location, discoverer) {
+       
         toBack(location);
         let character = getObj('character', discoverer.get('represents'));
         rollTest(discoverer, location, character);
+       
+
+      log("rollResult: " + rollResult);
+      log("resetToken: " + resetToken);
+
+      // Failed the check, reset token if it is set to reset it. If not reset the token remains active for the next player that intersects it.
+      if (rollResult = false) {
+
+          if (resetToken) {
+              location.set('aura1_radius', '');
+              location.set('status_white-tower', false);
+          }
+
+      } else if (rollResult) {location.set('aura1_radius', '');
+              location.set('status_white-tower', false);
+
+      }
     }
 
     /**
@@ -139,34 +169,48 @@ var PrivateFlavorMessage = (function () {
     /* Get the GM Notes, Test the roll, send a whisper to the player and GM */
 
     function rollTest(discoverer, location, character) {
+        let rollYN = 1;
         let json = getGMNoteData(location);
+        
         let attr = json["attr"];
         let passValue = json["pass"];
         let msgPass = json["on_pass"];
         let msgFail = json["on_fail"];
         let msgGM = "";
-        let diceRoll = ((DICE != 0) ? randomInteger(DICE) : 0);
-        let result = parseInt(getAttrByName(character.id, attr)) + diceRoll;
+        rollYN = Boolean(json["rollattrib"]);
+        resetToken = Boolean(json["resettoken"]);
+       
+        if (rollYN) {
+            let diceRoll = ((DICE != 0) ? randomInteger(DICE) : 0);
+             result = parseInt(getAttrByName(character.id, attr)) + diceRoll;
+        } else {
+
+            result = parseInt(getAttrByName(character.id, attr));
+        }
+
         let recipient = discoverer.get("name").split(" ")[0]; // get first name only
 
         if (result >= passValue) {
-
+            rollResult = true;
             let command = "/w " + recipient + " " + msgPass;
+
             msgGM = msgPass;
             log("CHAT SEND Pass " + command);
             sendChat("Your Intuition", command, null, { noarchive: true });
-
         }
         else if (msgFail != undefined) {
             let command = "/w " + recipient + " " + msgFail;
             msgGM = msgFail;
             sendChat("Your Intuition", command, null, { noarchive: true });
+            rollResult = false;
 
         }
+
         /* Let the GM know the results */
         let command = "/w gm <b>" + discoverer.get("name").split(" ")[0] + " | " + (result >= passValue) + "</b><br>" + msgGM;
         sendChat("PFM", command, null, { noarchive: true });
-    };
+
+     };
 
     function getGMNoteData(location) {
         var decode
