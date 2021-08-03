@@ -23,11 +23,11 @@ Json for token: remove the comments "// + text" in each line rollYN and resettok
 {
 
     "rollYN" :true" or false roll for result us use the attr value
-    "resettoken" : false // true or false reset the token on a failed attempt
-    "attr": "perception_bonus", // The attribute to use. Must match the exact name on the character sheet
-    "pass": 20, //The value needed to pass the roll check
-    "on_pass": "There is a masonry block that seems a little offset from the others. It looks as if it sticks out a little on one side.", //The sucess message
-    "on_fail": "The goblin bodies appear to have been chewed on by rats." //The fail message
+    "resettoken" : false // true or false reset the token on a failed attempt.
+    "attr": "perception_bonus", // The attribute to use. Must match the exact name on the character sheet.
+    "pass": 20, //The value needed to pass the roll check.
+    "on_pass": "There is a masonry block that seems a little offset from the others. It looks as if it sticks out a little on one side.", //The sucess message.
+    "on_fail": "The goblin bodies appear to have been chewed on by rats." //The fail message.
 
 }
 
