@@ -50,7 +50,7 @@ The character token should have its name displayed.
 var PrivateFlavorMessage = (function () {
     var DICE = 20;
     var PIXELS_PER_SQUARE = 70;
-    var VERSION = '0.1';
+    var VERSION = '0.3';
     var resetToken = Boolean(false);
     var rollResult = Boolean(false);
 
@@ -70,17 +70,14 @@ var PrivateFlavorMessage = (function () {
      //  log("resetToken: " + resetToken);
 
       // Failed the check, reset token if it is set to reset it. If not reset the token remains active for the next player that intersects it.
-      if (rollResult = false) {
+    
 
           if (resetToken) {
               location.set('aura1_radius', '');
               location.set('status_white-tower', false);
           }
 
-      } else if (rollResult = true) {location.set('aura1_radius', '');
-              location.set('status_white-tower', false);
-
-      }
+     
     }
 
     /**
